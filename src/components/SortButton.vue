@@ -23,19 +23,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+  import { ref } from 'vue';
 
-const options = ['All', 'Completed', 'In Progress'];
-const selectedOption = ref('All');
-const isOpen = ref(false);
+  const options = ['All', 'Completed', 'In Progress'];
+  const selectedOption = ref('All');
+  const isOpen = ref(false);
 
-function toggleDropdown() {
-  isOpen.value = !isOpen.value;
-}
+  const emit = defineEmits<{(e: 'sort', payload: string): void}>();
 
-function selectOption(option: string) {
-  selectedOption.value = option;
-  isOpen.value = false;
+  function toggleDropdown() {
+    isOpen.value = !isOpen.value;
+  }
+
+  function selectOption(option: string) {
+    selectedOption.value = option;
+    isOpen.value = false;
+    emit('sort', option);
 }
 </script>
 

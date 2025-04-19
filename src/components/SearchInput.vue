@@ -1,14 +1,15 @@
-<script lang="ts" >
-  import {ref} from "vue";
+<script setup lang="ts" >
+  const emit = defineEmits<{ (e: 'search', value: string): void }>();
 
-  export default {
-    name: "SearchInput",
+  function searchValueHandler(e: Event) {
+    const target = e.target as HTMLInputElement;
+    emit('search', target.value);
   }
 </script>
 
 <template>
   <div class="search-input">
-    <input placeholder="Search note..."/>
+    <input @input="searchValueHandler" placeholder="Search note..."/>
     <img src="../assets/search-icon.svg" alt="search-icon">
   </div>
 </template>

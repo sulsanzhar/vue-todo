@@ -5,20 +5,22 @@
   <TaskModal
       v-if="isShow"
       @close="isShow = false"
-      @submit="handleSubmit"
+      @submit="handleApply"
+      title="NEW NOTE"
+      btn="APPLY"
   />
 </template>
 
 <script setup lang="ts">
-import TaskModal from "./TaskModal.vue";
-import { ref } from "vue";
+  import TaskModal from "./TaskModal.vue";
+  import { ref } from "vue";
 
-const emit = defineEmits(['submit']);
-const isShow = ref(false);
+  const emit = defineEmits(['submit']);
+  const isShow = ref(false);
 
-function handleSubmit(task: { id: number; text: string }) {
-  emit('submit', task);
-  isShow.value = false;
+  function handleApply(task: { id: number; task: string }) {
+    emit('submit', task);
+    isShow.value = false;
 }
 </script>
 

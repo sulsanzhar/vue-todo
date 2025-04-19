@@ -1,33 +1,45 @@
 <template>
   <div class="task-modal-bg">
-    <div class="task-modal">
+    <form @submit.prevent="submit" class="task-modal">
       <div>
-        <h2>NEW NOTE</h2>
-        <input v-model="task" placeholder="Input your note..." type="text">
+        <h2>{{ title }}</h2>
+        <input
+            v-model="task"
+            placeholder="Input your note..." type="text"
+        >
       </div>
       <div class="task-modal-func">
-        <button @click="$emit('close')" class="cancel-btn">CANCEL</button>
-        <button @click="submit" class="apply-btn">APPLY</button>
+        <button type="button" @click="$emit('close')" class="cancel-btn">CANCEL</button>
+        <button type="submit" class="apply-btn">{{ btn }}</button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
 <script lang="ts">
   export default {
     name: 'TaskModal',
-    emits: ['close', 'submit'],
+    emits: ['close', 'submit', 'edit'],
+    props: {
+      title: String,
+      btn: String,
+      initialTask: {
+        type: Object,
+        required: false,
+        default: () => ({ id: '', task: '' })
+      }
+    },
     data() {
       return {
-        task: '',
+        task: this.initialTask.task || ''
       }
     },
     methods: {
       submit() {
         if (this.task.trim()) {
           this.$emit('submit', {
-            id: Date.now(),
-            text: this.task.trim()
+            id: this.initialTask.id,
+            task: this.task.trim()
           });
           this.$emit('close');
           this.task = "";
