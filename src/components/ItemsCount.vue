@@ -5,7 +5,9 @@
 </template>
 
 <script setup lang="ts">
-  defineProps<{ count: number }>()
+  import { inject } from 'vue';
+
+  const count = inject<{ count: number }[]>("count", []);
 </script>
 
 <style scoped>

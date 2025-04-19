@@ -1,13 +1,32 @@
-<script setup lang="ts">
-  import NotesManager from './views/NotesManager.vue';
-  import Tasks from "./views/Tasks.vue";
-  import OnPlusButton from "./components/OnPlusButton.vue";
-  import {onMounted, ref} from "vue";
-  import axios from "axios";
-  import Loader from "./components/Loader.vue";
-  import ItemsCount from "./components/ItemsCount.vue";
+<template>
+  <div class="app-container">
+    <h1 class="main-text">TODO LIST</h1>
+    <NotesManager />
+    <Tasks v-if="!isLoading" />
+    <ItemsCount v-if="tasks.length" />
+    <OnPlusButton @submit="onSubmitHandler" />
+    <Loader v-if="isLoading" />
+  </div>
+</template>
 
-  const tasks = ref<Task[]>([])
+<script setup lang="ts">
+  import { onMounted, ref, inject, computed, type Ref, provide } from "vue";
+  import axios from "axios";
+  import { ItemsCount, OnPlusButton, Loader } from './components/index.ts';
+  import { NotesManager, Tasks } from "./views/index.ts";
+
+  const tasks = inject<Ref<Task[]>>('tasks', ref<Task[]>([]));
+  provide('tasks', tasks);
+
+  const count = computed(() => tasks.value.length);
+  provide('count', count);
+
+  provide('editTask', onEditTask);
+  provide('doneTask', onDoneTask);
+  provide('deleteTask', onDeleteTask);
+  provide('searchTask', onSearchHandler);
+  provide('sortTask', onSortHandler);
+
   const allTasks = ref<Task[]>([]);
   const isLoading = ref(false);
 
@@ -104,29 +123,10 @@
   function onSearchHandler(value: string) {
     const arr = [...allTasks.value];
 
-    console.log("value from app.vue: ", value)
-
     tasks.value = arr.filter(item => item.task.toLowerCase().includes(value))
   }
 
 </script>
-
-<template>
-  <div class="app-container">
-    <h1 class="main-text">TODO LIST</h1>
-    <NotesManager @sort="onSortHandler" @search="onSearchHandler"/>
-    <Tasks
-        v-if="!isLoading"
-        :tasks="tasks"
-        @delete="onDeleteTask"
-        @edit="onEditTask"
-        @done="onDoneTask"
-    />
-    <ItemsCount v-if="tasks.length" :count="tasks.length"/>
-    <OnPlusButton @submit="onSubmitHandler" />
-    <Loader v-if="isLoading" />
-  </div>
-</template>
 
 <style scoped>
   .app-container {

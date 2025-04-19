@@ -1,9 +1,11 @@
 <script setup lang="ts" >
-  const emit = defineEmits<{ (e: 'search', value: string): void }>();
+  import { inject } from 'vue';
+
+  const searchInput = inject<(value: string) => void>('searchTask');
 
   function searchValueHandler(e: Event) {
     const target = e.target as HTMLInputElement;
-    emit('search', target.value);
+    if(searchInput) searchInput(target.value.toLowerCase());
   }
 </script>
 

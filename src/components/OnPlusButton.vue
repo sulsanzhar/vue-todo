@@ -12,13 +12,13 @@
 </template>
 
 <script setup lang="ts">
-  import TaskModal from "./TaskModal.vue";
   import { ref } from "vue";
+  import { TaskModal } from './index.ts'
 
   const emit = defineEmits(['submit']);
   const isShow = ref(false);
 
-  function handleApply(task: { id: number; task: string }) {
+  function handleApply(task: { id: string; task: string; done: boolean }): void {
     emit('submit', task);
     isShow.value = false;
 }

@@ -4,12 +4,6 @@
   </button>
 </template>
 
-<script lang="ts">
-  export default {
-    name: "ChangeThemeButton",
-  }
-</script>
-
 <style>
   .change-theme-button {
     width: 38px;

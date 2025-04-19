@@ -16,35 +16,39 @@
   </div>
 </template>
 
-<script lang="ts">
-  export default {
-    name: 'TaskModal',
-    emits: ['close', 'submit', 'edit'],
-    props: {
-      title: String,
-      btn: String,
-      initialTask: {
-        type: Object,
-        required: false,
-        default: () => ({ id: '', task: '' })
-      }
-    },
-    data() {
-      return {
-        task: this.initialTask.task || ''
-      }
-    },
-    methods: {
-      submit() {
-        if (this.task.trim()) {
-          this.$emit('submit', {
-            id: this.initialTask.id,
-            task: this.task.trim()
-          });
-          this.$emit('close');
-          this.task = "";
-        }
-      }
+<script setup lang="ts">
+  import { ref, watch } from 'vue';
+
+  const props = defineProps<{
+    title: string;
+    btn: string;
+    initialTask?: {
+      id: string;
+      task: string;
+      done?: boolean;
+    };
+  }>();
+
+  const emit = defineEmits<{
+    (e: 'close'): void;
+    (e: 'submit', payload: { id: string; task: string; done: boolean }): void;
+  }>();
+
+  const task = ref(props.initialTask?.task ?? '');
+
+  watch(() => props.initialTask, (newVal) => {
+    task.value = newVal?.task ?? '';
+  });
+
+  function submit() {
+    if (task.value.trim()) {
+      emit('submit', {
+        id: props.initialTask?.id ?? '',
+        task: task.value.trim(),
+        done: props.initialTask?.done ?? false,
+      });
+      emit('close');
+      task.value = '';
     }
   }
 </script>
@@ -103,7 +107,7 @@
     background-color: #6C63FF;
     border-color: transparent;
   }
-  
+
   @media (min-width: 320px ) and (max-width: 500px) {
     .task-modal {
       width: 90%;

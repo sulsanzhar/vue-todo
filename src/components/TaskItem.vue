@@ -28,37 +28,31 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from "vue";
-  import TaskModal from "./TaskModal.vue";
+  import { ref, inject } from "vue";
+  import { TaskModal } from "./index.ts";
 
   const props = defineProps<{ task: { id: string; task: string; done: boolean } }>();
-
-  const emit = defineEmits<{
-    (e: 'delete', task: { id: string; task: string; done: boolean }): void;
-    (e: 'edit', task: { id: string; task: string; done: boolean }): void;
-    (e: 'done', task: { id: string; task: string; done: boolean }): void;
-  }>();
 
   const isActive = ref(props.task.done);
   const isEditShow = ref(false);
 
+  const editTask = inject<(task: { id: string; task: string; done: boolean }) => void>('editTask');
+  const deleteTask = inject<(task: { id: string; task: string; done: boolean }) => void>('deleteTask');
+  const doneTask = inject<(task: { id: string; task: string; done: boolean }) => void>('doneTask');
+
   function onChangeActive(task: { id: string; task: string; done: boolean }) {
-    emit('done', { ...task, done: !task.done });
+    if(doneTask) doneTask({ ...task, done: !task.done });
     isActive.value = !isActive.value;
   }
 
   function handleEdit(task: { id: string; task: string; done: boolean }) {
-    emit('edit', task);
+    if(editTask) editTask(task);
     isEditShow.value = false;
   }
 
-  function onDeleteTask() {
-    emit('delete', props.task);
-  }
+  const onDeleteTask = () => deleteTask && deleteTask(props.task)
 
-  function openEditModal() {
-    isEditShow.value = true;
-  }
+  const openEditModal = () => isEditShow.value = true;
 
 </script>
 

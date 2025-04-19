@@ -1,29 +1,12 @@
 <template>
   <div class="NotesManager">
-    <SearchInput @search="onSearchHandler"/>
-    <SortButton @sort="onSortHandler"/>
+    <SearchInput />
+    <SortButton />
     <ChangeThemeButton />
   </div>
 </template>
 
-<script setup lang="ts">
-  import SearchInput from "../components/SearchInput.vue";
-  import SortButton from "../components/SortButton.vue";
-  import ChangeThemeButton from "../components/ChangeThemeButton.vue";
-
-  const emit = defineEmits<{
-    (e: 'sort', option: string): void;
-    (e: 'search', value: string): void;
-  }>();
-
-  function onSortHandler(option: string) {
-    emit('sort', option);
-  }
-
-  function onSearchHandler(value: string) {
-    emit('search', value.toLowerCase());
-  }
-</script>
+<script setup lang="ts"> import { SearchInput, SortButton, ChangeThemeButton } from '../components/index.ts' </script>
 
 <style  scoped>
   .NotesManager {

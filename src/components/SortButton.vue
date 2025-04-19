@@ -23,22 +23,20 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, inject } from 'vue';
+
+  const sortHandler = inject<{(option: string): void}>('sortTask');
 
   const options = ['All', 'Completed', 'In Progress'];
   const selectedOption = ref('All');
   const isOpen = ref(false);
 
-  const emit = defineEmits<{(e: 'sort', payload: string): void}>();
-
-  function toggleDropdown() {
-    isOpen.value = !isOpen.value;
-  }
+  const toggleDropdown = () => isOpen.value = !isOpen.value;
 
   function selectOption(option: string) {
     selectedOption.value = option;
     isOpen.value = false;
-    emit('sort', option);
+    if(sortHandler) sortHandler(option);
 }
 </script>
 
