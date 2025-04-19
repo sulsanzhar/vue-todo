@@ -31,4 +31,11 @@
     margin-top: 30px;
     gap: 16px;
   }
+
+  @media (max-width: 320px) {
+    .NotesManager {
+      flex-direction: column-reverse;
+      align-items: center;
+    }
+  }
 </style>

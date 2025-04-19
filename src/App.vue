@@ -142,4 +142,10 @@
     color: #252525;
     font-weight: initial;
   }
+
+  @media (min-width: 320px) and (max-width: 480px) {
+    .app-container {
+      width: 100%;
+    }
+  }
 </style>

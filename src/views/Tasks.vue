@@ -54,4 +54,10 @@
     text-align: center;
     font-weight: normal;
   }
+
+  @media (min-width: 320px) and (max-width: 480px) {
+    .tasks {
+      width: 90%;
+    }
+  }
 </style>

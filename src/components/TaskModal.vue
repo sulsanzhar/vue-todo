@@ -103,4 +103,10 @@
     background-color: #6C63FF;
     border-color: transparent;
   }
+  
+  @media (min-width: 320px ) and (max-width: 500px) {
+    .task-modal {
+      width: 90%;
+    }
+  }
 </style>

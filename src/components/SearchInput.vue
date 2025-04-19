@@ -31,4 +31,10 @@
     right: 16px;
     top: 12px;
   }
+
+  @media (min-width: 320px) and (max-width: 480px) {
+    .search-input {
+      display: none;
+    }
+  }
 </style>
