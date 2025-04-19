@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<script setup lang="ts"> import { SearchInput, SortButton, ChangeThemeButton } from '../components/index.ts' </script>
+<script setup lang="ts"> import { SearchInput, SortButton, ChangeThemeButton } from '../components/index.ts'; </script>
 
 <style  scoped>
   .NotesManager {
