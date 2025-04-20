@@ -5,18 +5,22 @@
         :key="task.id"
         :task="task"
     />
-    <div v-if="!tasks.length" class="empty">
-    <img src="../../public/detective.png" alt="detective-image">
+    <div v-if="isLoading" class="empty">
+      <Loader />
+    </div>
+    <div v-if="!isLoading && !tasks.length" class="empty">
+      <img src="../../public/detective.png" alt="detective-image">
       <h2>Empty...</h2>
     </div>
   </ul>
 </template>
 
 <script setup lang="ts">
-  import { TaskItem } from "../components/index.ts";
   import { inject } from 'vue';
+  import { TaskItem, Loader } from "../components/index.ts";
 
   const tasks = inject<{ id: string; task: string; done: boolean }[]>("tasks", []);
+  const isLoading = inject('isLoading');
 </script>
 
 <style scoped>
@@ -55,9 +59,12 @@
   background-color: #5a4bf0;
 }
 
-
 .empty {
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
   }
   .empty h2 {
     text-align: center;

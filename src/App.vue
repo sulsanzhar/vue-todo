@@ -2,17 +2,16 @@
   <div class="app-container">
     <h1 class="main-text">TODO LIST</h1>
     <NotesManager />
-    <Tasks v-if="!isLoading" />
+    <Tasks />
     <ItemsCount v-if="tasks.length" />
     <OnPlusButton @submit="onSubmitHandler" />
-    <Loader v-if="isLoading" />
   </div>
 </template>
 
 <script setup lang="ts">
   import { onMounted, ref, type Reactive, inject, computed, provide, reactive } from "vue";
   import axios from "axios";
-  import { ItemsCount, OnPlusButton, Loader } from './components/index.ts';
+  import { ItemsCount, OnPlusButton } from './components/index.ts';
   import { NotesManager, Tasks } from "./views/index.ts";
   import { findIndex } from "./utils/findIndex.ts";
 
@@ -28,8 +27,10 @@
   provide('searchTask', onSearchHandler);
   provide('sortTask', onSortHandler);
 
-  const allTasks = ref<Task[]>([]);
   const isLoading = ref(false);
+  provide('isLoading', isLoading);
+
+  const allTasks = ref<Task[]>([]);
   let currentFilter = ref("All");
 
   type Task = { id: string; task: string; done: boolean };
@@ -49,9 +50,12 @@
           done: task.done,
         }));
 
+
+        isLoading.value = true;
         allTasks.value = tasksFromDB;
         tasks.splice(0, tasks.length, ...tasksFromDB);
       } else {
+        isLoading.value = false;
         allTasks.value = [];
         tasks.splice(0, tasks.length);
       }

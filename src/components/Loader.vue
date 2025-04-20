@@ -14,7 +14,6 @@
     justify-content: center;
     align-items: center;
     height: 60px;
-    margin-top: 50px;
   }
 
   .loader-square {
