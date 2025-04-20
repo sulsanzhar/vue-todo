@@ -17,26 +17,34 @@
 </template>
 
 <style scoped>
-  .search-input {
-    position: relative;
-  }
-  .search-input input{
-    width: 595px;
-    padding: 9px 16px;
-    border: 1px solid #6C63FF;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  .search-input img {
-    width: 21px;
-    position: absolute;
-    right: 16px;
-    top: 12px;
-  }
+.search-input {
+  position: relative;
+}
 
-  @media (min-width: 320px) and (max-width: 480px) {
-    .search-input {
-      display: none;
-    }
+.search-input input {
+  width: 595px;
+  padding: 9px 16px;
+  border: 1px solid #6C63FF;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.2s ease; /* Плавный переход для изменения цвета */
+}
+
+.search-input input:focus {
+  border-color: #6C63FF;  /* Устанавливаем фиолетовый цвет для активного состояния */
+  outline: none;  /* Убираем стандартную обводку браузера */
+}
+
+.search-input img {
+  width: 21px;
+  position: absolute;
+  right: 16px;
+  top: 12px;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .search-input {
+    display: none;
   }
+}
 </style>

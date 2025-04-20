@@ -20,14 +20,43 @@
 </script>
 
 <style scoped>
-  .tasks {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 34px;
-    width: 700px;
-  }
-  .empty {
+.tasks {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  width: 700px;
+  height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.4), 0 8px 20px rgba(108, 99, 255, 0.2);
+  border-radius: 10px;
+  padding: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #6C63FF #f0f0f0;
+}
+
+.tasks::-webkit-scrollbar {
+  width: 15px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tasks:hover::-webkit-scrollbar {
+  opacity: 1;
+}
+
+.tasks::-webkit-scrollbar-thumb {
+  background-color: #6C63FF;
+  border-radius: 10px;
+  border: 3px solid #f0f0f0;
+}
+
+.tasks::-webkit-scrollbar-thumb:hover {
+  background-color: #5a4bf0;
+}
+
+
+.empty {
     margin: 0 auto;
   }
   .empty h2 {

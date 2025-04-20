@@ -10,15 +10,16 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, ref, inject, computed, type Ref, provide } from "vue";
+  import { onMounted, ref, type Reactive, inject, computed, provide, reactive } from "vue";
   import axios from "axios";
   import { ItemsCount, OnPlusButton, Loader } from './components/index.ts';
   import { NotesManager, Tasks } from "./views/index.ts";
+  import { findIndex } from "./utils/findIndex.ts";
 
-  const tasks = inject<Ref<Task[]>>('tasks', ref<Task[]>([]));
+  const tasks = inject<Reactive<Task[]>>('tasks', reactive<Task[]>([]));
   provide('tasks', tasks);
 
-  const count = computed(() => tasks.value.length);
+  const count = computed(() => tasks.length);
   provide('count', count);
 
   provide('editTask', onEditTask);
@@ -29,6 +30,7 @@
 
   const allTasks = ref<Task[]>([]);
   const isLoading = ref(false);
+  let currentFilter = ref("All");
 
   type Task = { id: string; task: string; done: boolean };
   type TasksResponse = Record<string, Task>;
@@ -48,28 +50,29 @@
         }));
 
         allTasks.value = tasksFromDB;
-        tasks.value = tasksFromDB;
+        tasks.splice(0, tasks.length, ...tasksFromDB);
       } else {
         allTasks.value = [];
-        tasks.value = [];
+        tasks.splice(0, tasks.length);
       }
     } catch (error) {
       console.error("Error while fetching tasks:", error);
       allTasks.value = [];
-      tasks.value = [];
+      tasks.splice(0, tasks.length);
     } finally {
       isLoading.value = false;
     }
   });
 
   async function onSubmitHandler(newTask: {id: string; task: string; done: boolean }) {
-    tasks.value.push(newTask);
-
     try {
       const req = axios.post('https://vue-todo-57da6-default-rtdb.firebaseio.com/todos.json', {
         task: newTask.task,
         done: false
       });
+
+      allTasks.value.push(newTask);
+      tasks.push(newTask);
       console.log("req: ", await req);
     } catch (e) {
       console.error(e);
@@ -77,7 +80,9 @@
   }
 
   function onDeleteTask(taskToDelete: { id: string; task: string; done: boolean }) {
-    axios.delete(`https://vue-todo-57da6-default-rtdb.firebaseio.com/todos/${taskToDelete.id}.json`)
+    axios.delete(`https://vue-todo-57da6-default-rtdb.firebaseio.com/todos/${taskToDelete.id}.json`);
+    const index: number = findIndex(tasks, taskToDelete);
+    tasks.splice(index, 1);
   }
 
   function onEditTask(taskToEdit: { id: string; task: string; done: boolean }) {
@@ -85,9 +90,10 @@
       task: taskToEdit.task,
       done: taskToEdit.done
     }).then(() => {
-      const index = tasks.value.findIndex(task => task.id === taskToEdit.id);
+      const index = findIndex(tasks, taskToEdit);
       if (index !== -1) {
-        tasks.value[index].task = taskToEdit.task;
+        tasks[index].task = taskToEdit.task;
+        tasks[index].done = taskToEdit.done;
       }
     });
   }
@@ -97,34 +103,47 @@
       task: taskToDone.task,
       done: taskToDone.done
     }).then(() => {
-      const index = tasks.value.findIndex(task => task.id === taskToDone.id);
-      if (index !== -1) {
-        tasks.value[index].task = taskToDone.task;
+      const indexAll = allTasks.value.findIndex(t => t.id === taskToDone.id);
+      if (indexAll !== -1) {
+        allTasks.value[indexAll] = { ...taskToDone };
       }
+
+      onSortHandler(currentFilter.value);
     });
   }
 
   function onSortHandler(option: string) {
+    currentFilter.value = option;
+
     const arr = [...allTasks.value];
+    let filtered: Task[] = [];
 
     switch (option) {
       case "All":
-        tasks.value = arr;
+        filtered = arr;
         break;
       case "Completed":
-        tasks.value = arr.filter(item => item.done === true);
+        filtered = arr.filter(item => item.done === true);
         break;
       case "In Progress":
-        tasks.value = arr.filter(item => item.done === false);
+        filtered = arr.filter(item => item.done === false);
         break;
     }
+
+    tasks.length = 0;
+    tasks.push(...filtered);
   }
 
   function onSearchHandler(value: string) {
     const arr = [...allTasks.value];
+    const filtered = arr.filter(item =>
+        item.task.toLowerCase().includes(value.toLowerCase())
+    );
 
-    tasks.value = arr.filter(item => item.task.toLowerCase().includes(value))
+    tasks.length = 0;
+    tasks.push(...filtered);
   }
+
 
 </script>
 
